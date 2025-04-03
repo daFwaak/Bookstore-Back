@@ -18,7 +18,7 @@ mongoose.connect(process.env.MONGO_URI).then((val) => {
 });
 
 app.use(cors({
-  origin: ['https://bookstore-front-eta.vercel.app/'],
+  origin: ['http://localhost:5173'],
 }));
 
 app.use(express.json());
