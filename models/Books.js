@@ -24,13 +24,14 @@ const bookSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['Fiction', 'Mystery & Thriller', 'Romance  ', 'non-fiction', 'other'],
+    enum: ['Fiction', 'Mystery & Thriller', 'Romance', 'non-fiction', 'other'],
     required: true
   },
   stock: {
     type: Number,
     required: true
   },
+  
 }, { timestamps: true });
 
 const Book = mongoose.model('Book', bookSchema);

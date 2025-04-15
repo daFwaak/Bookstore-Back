@@ -20,14 +20,17 @@ export const getOrderById = async (req, res) => {
 
   try {
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: 'please provide valid id' });
+
     const order = await Order.findById(id).populate('books.bookId');
+    console.log(order); // Log the populated order object
+
     return res.status(200).json(order);
-
   } catch (err) {
-
     return res.status(400).json({ message: `${err}` });
   }
-}
+};
+
+
 
 export const getOrderByUser = async (req, res) => {
 

@@ -21,6 +21,7 @@ const orderItemSchema = new mongoose.Schema({
   }
 });
 
+
 // Define the schema for an order
 const orderSchema = new mongoose.Schema({
   userId: {

@@ -5,7 +5,6 @@ import orderRoutes from './routes/orderRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import fileUpload from 'express-fileupload';
 import cors from 'cors';
 const app = express();
 
@@ -22,10 +21,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(fileUpload({
-  limits: { fileSize: 5 * 1024 * 1024 },
-  abortOnLimit: true
-}));
+app.use(express.urlencoded({ extended: true }));
 
 
 app.use(express.static('uploads'));
