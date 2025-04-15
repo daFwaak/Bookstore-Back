@@ -43,16 +43,27 @@ export const addBook = async (req, res) => {
   const { title, author, description, price, category, stock } = req.body;
 
   try {
+    
+    console.log('Incoming book data:', req.body);
+    console.log('Uploaded file:', req.file);
+
+
+    if (!title || !author || !price || !category) {
+      return res.status(400).json({ message: 'Missing required fields: title, author, price, or category' });
+    }
+
     let imageUrl = '';
 
-    if (req.file && req.file.path) {
+    if (req.file?.path) {
       const cloudinaryResult = await uploadOnCloudnary(req.file.path);
-      if (cloudinaryResult?.url) {
-        imageUrl = cloudinaryResult.url;
+      if (cloudinaryResult?.secure_url) {
+        imageUrl = cloudinaryResult.secure_url;
+      } else {
+        return res.status(400).json({ message: 'Image upload failed' });
       }
     }
 
-    await Book.create({
+    const newBook = await Book.create({
       title,
       author,
       description,
@@ -62,12 +73,18 @@ export const addBook = async (req, res) => {
       image: imageUrl,
     });
 
-    return res.status(200).json({ message: 'Successfully added book' });
+    console.log('Book added:', newBook._id);
+
+    return res.status(201).json({
+      message: 'Book successfully added',
+      book: newBook,
+    });
   } catch (err) {
     console.error('Error in addBook:', err.message);
     return res.status(400).json({ message: `Error: ${err.message}` });
   }
 };
+
 export const updateBook = async (req, res) => {
   const { title, author, description, price, category, stock } = req.body;
   const { id } = req.params;
