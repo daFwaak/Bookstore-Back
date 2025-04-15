@@ -1,8 +1,6 @@
 import Order from "../models/Order.js"
 import mongoose from "mongoose";
 
-
-
 export const getOrders = async (req, res) => {
   try {
     const orders = await Order.find({}).sort('createdAt: -1');
@@ -14,7 +12,6 @@ export const getOrders = async (req, res) => {
   }
 }
 
-
 export const getOrderById = async (req, res) => {
   const { id } = req.params;
 
@@ -22,7 +19,7 @@ export const getOrderById = async (req, res) => {
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: 'please provide valid id' });
 
     const order = await Order.findById(id).populate('books.bookId');
-    console.log(order); // Log the populated order object
+    console.log(order); 
 
     return res.status(200).json(order);
   } catch (err) {
