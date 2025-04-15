@@ -40,9 +40,6 @@ export const getBook = async (req, res) => {
 
 
 export const addBook = async (req, res) => {
-  console.log('📄 Incoming Body:', req.body);
-  console.log('📸 Incoming File:', req.file);
-
   const { title, author, description, price, category, stock } = req.body;
 
   try {
