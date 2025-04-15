@@ -90,15 +90,25 @@ export const updateBook = async (req, res) => {
   const { id } = req.params;
 
   try {
-    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: 'Invalid book ID' });
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({ message: 'Invalid book ID' });
+    }
 
     const book = await Book.findById(id);
-    if (!book) return res.status(404).json({ message: 'Book not found' });
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
 
-    if (req.file) {
+    console.log('Updating book:', id);
+    console.log('Incoming data:', req.body);
+    console.log('Uploaded file:', req.file);
+
+    if (req.file?.path) {
       const cloudinaryResult = await uploadOnCloudnary(req.file.path);
-      if (cloudinaryResult && cloudinaryResult.url) {
-        book.image = cloudinaryResult.url;
+      if (cloudinaryResult?.secure_url) {
+        book.image = cloudinaryResult.secure_url;
+      } else {
+        return res.status(400).json({ message: 'Image upload failed' });
       }
     }
 
@@ -110,11 +120,16 @@ export const updateBook = async (req, res) => {
     book.stock = stock || book.stock;
 
     await book.save();
-    return res.status(200).json({ message: 'Book updated successfully' });
+
+    console.log('Book updated:', book._id);
+
+    return res.status(200).json({ message: 'Book updated successfully', book });
   } catch (err) {
-    return res.status(400).json({ message: `${err}` });
+    console.error('Error in updateBook:', err.message);
+    return res.status(400).json({ message: `Error: ${err.message}` });
   }
 };
+
 
 export const removeBook = async (req, res) => {
   const { id } = req.params;
