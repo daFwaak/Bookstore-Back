@@ -1,8 +1,6 @@
 import Joi from 'joi';
 import validator from 'express-joi-validation'
 
-
-
 export const validate = validator.createValidator({});
 
 const authSchema = {
@@ -16,8 +14,17 @@ export const loginSchema = Joi.object({
 
 export const registerSchema = Joi.object({
   username: Joi.string().min(6).required(),
+  role: Joi.string().valid('user', 'admin').default('user'),
+  secretKey: Joi.when('role', {
+    is: 'admin',
+    then: Joi.string().required().messages({
+      'any.required': 'Secret key is required for admin registration'
+    }),
+    otherwise: Joi.optional()
+  }),
   ...authSchema
 });
+
 
 export const bookSchema = Joi.object({
   title: Joi.string().required(),
@@ -26,9 +33,8 @@ export const bookSchema = Joi.object({
   price: Joi.number().required(),
   category: Joi.string().valid('Fiction', 'Mystery & Thriller', 'Romance', 'non-fiction', 'other').required(),
   stock: Joi.number().required(),
+  image: Joi.string().required(),
 });
-
-
 
 
 

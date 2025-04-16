@@ -19,7 +19,7 @@ export const uploadOnCloudnary = async (filePath) => {
       folder: 'BookStore',
     });
 
-    console.log('✅ Uploaded to Cloudinary:', response.url);
+    console.log('Uploaded to Cloudinary:', response.url);
 
     fs.unlinkSync(filePath); 
     return response;

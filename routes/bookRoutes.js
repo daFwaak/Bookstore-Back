@@ -6,9 +6,10 @@ import {
   updateBook,
   removeBook
 } from '../controllers/bookController.js';
-
 import { adminCheck, authCheck } from '../middlewares/authCheck.js';
 import { upload } from '../middlewares/multer.js';
+import { bookSchema, validate } from '../utils/validators.js';
+
 
 const router = express.Router();
 

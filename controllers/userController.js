@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
-// User Login
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   
@@ -17,7 +16,7 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.SECRET,
-      { expiresIn: "7d" }  // ✅ Token expires in 7 days
+      { expiresIn: "7d" } 
     );
 
     return res.status(200).json({
@@ -36,20 +35,27 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// User Registration
+
 export const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, role, secretKey } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(409).json({ message: "User already exists" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);  // ✅ Use async hashing
+    if (role === 'admin') {
+      if (!secretKey || secretKey !== process.env.ADMIN_SECRET_KEY) {
+        return res.status(403).json({ message: "Invalid admin secret key" });
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
       username,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      role: role || 'user',
     });
 
     return res.status(201).json({ message: "Registered successfully", userId: newUser._id });
@@ -61,14 +67,14 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// Get User by ID
+
 export const getUser = async (req, res) => {
   const { id } = req.params;
   
   try {
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: "Invalid user ID" });
 
-    const user = await User.findById(id).select("-password");  // ✅ Exclude password
+    const user = await User.findById(id).select("-password"); 
     if (!user) return res.status(404).json({ message: "User not found" });
 
     return res.status(200).json(user);
@@ -80,7 +86,7 @@ export const getUser = async (req, res) => {
   }
 };
 
-// Update User
+
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const { username, email } = req.body;

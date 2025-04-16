@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-// Define the schema for an order item
+
 const orderItemSchema = new mongoose.Schema({
   bookId: { 
     type: mongoose.Schema.Types.ObjectId, 
@@ -22,7 +22,7 @@ const orderItemSchema = new mongoose.Schema({
 });
 
 
-// Define the schema for an order
+
 const orderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
